@@ -19,7 +19,7 @@
       max-width: 600px;
       margin: auto;
     }
-    input[type="file"] {
+    input[type="file"], input[type="number"] {
       margin: 10px 0;
     }
     button {
@@ -60,6 +60,24 @@
       <button onclick="mergePDFs()">Merge PDFs</button>
     </div>
 
+    <div class="tool-section">
+      <h2>Split PDF</h2>
+      <input type="file" id="splitInput" accept="application/pdf" />
+      <br />
+      <input type="number" id="pageNumber" placeholder="Enter page number (e.g., 1)" />
+      <br />
+      <button onclick="splitPDF()">Split PDF</button>
+    </div>
+
+    <div class="tool-section">
+      <h2>Protect PDF (Password)</h2>
+      <input type="file" id="protectInput" accept="application/pdf" />
+      <br />
+      <input type="text" id="password" placeholder="Enter password" />
+      <br />
+      <button onclick="protectPDF()">Protect PDF</button>
+    </div>
+
     <div id="output"></div>
   </div>
 
@@ -90,6 +108,28 @@
 
       const mergedPdfBytes = await mergedPdf.save();
       downloadBlob(mergedPdfBytes, 'merged.pdf');
+    }
+
+    async function splitPDF() {
+      const input = document.getElementById('splitInput');
+      const file = input.files[0];
+      const pageNumber = parseInt(document.getElementById('pageNumber').value);
+      if (!file || isNaN(pageNumber)) return alert("Please select a file and enter valid page number.");
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+      const splitPdf = await PDFLib.PDFDocument.create();
+      const [page] = await splitPdf.copyPages(pdfDoc, [pageNumber - 1]);
+      splitPdf.addPage(page);
+      const pdfBytes = await splitPdf.save();
+      downloadBlob(pdfBytes, `page-${pageNumber}.pdf`);
+    }
+
+    async function protectPDF() {
+      const input = document.getElementById('protectInput');
+      const file = input.files[0];
+      const password = document.getElementById('password').value;
+      if (!file || !password) return alert("Select file and enter password");
+      alert("Password protection is not yet supported in browser. This will require server-side code or paid libraries.");
     }
 
     function downloadBlob(data, filename) {
