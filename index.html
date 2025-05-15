@@ -1,157 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyPDFTools</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      text-align: center;
-      padding: 40px;
-    }
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-      margin: auto;
-    }
-    input[type="file"], input[type="number"] {
-      margin: 10px 0;
-    }
-    button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      margin: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .tool-section {
-      margin-bottom: 40px;
-    }
-    #output {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>EasyPDFTools - Free PDF Tools</h1>
-
-    <div class="tool-section">
-      <h2>Compress PDF</h2>
-      <input type="file" id="compressInput" accept="application/pdf" />
-      <br />
-      <button onclick="compressPDF()">Compress PDF</button>
-    </div>
-
-    <div class="tool-section">
-      <h2>Merge PDF</h2>
-      <input type="file" id="mergeInput1" accept="application/pdf" multiple />
-      <br />
-      <button onclick="mergePDFs()">Merge PDFs</button>
-    </div>
-
-    <div class="tool-section">
-      <h2>Split PDF</h2>
-      <input type="file" id="splitInput" accept="application/pdf" />
-      <br />
-      <input type="number" id="pageNumber" placeholder="Enter page number (e.g., 1)" />
-      <br />
-      <button onclick="splitPDF()">Split PDF</button>
-    </div>
-
-    <div class="tool-section">
-      <h2>Protect PDF (Password)</h2>
-      <input type="file" id="protectInput" accept="application/pdf" />
-      <br />
-      <input type="text" id="password" placeholder="Enter password" />
-      <br />
-      <button onclick="protectPDF()">Protect PDF</button>
-    </div>
-
-    <div id="output"></div>
-  </div>
-
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-  <script>
-    async function compressPDF() {
-      const input = document.getElementById('compressInput');
-      const file = input.files[0];
-      if (!file) return alert("Please select a PDF file.");
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-      const compressedPdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      downloadBlob(compressedPdfBytes, 'compressed.pdf');
-    }
-
-    async function mergePDFs() {
-      const input = document.getElementById('mergeInput1');
-      const files = input.files;
-      if (!files.length) return alert("Please select PDF files to merge.");
-
-      const mergedPdf = await PDFLib.PDFDocument.create();
-      for (let file of files) {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
-        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        copiedPages.forEach((page) => mergedPdf.addPage(page));
-      }
-
-      const mergedPdfBytes = await mergedPdf.save();
-      downloadBlob(mergedPdfBytes, 'merged.pdf');
-    }
-
-    async function splitPDF() {
-      const input = document.getElementById('splitInput');
-      const file = input.files[0];
-      const pageNumber = parseInt(document.getElementById('pageNumber').value);
-      if (!file || isNaN(pageNumber)) return alert("Please select a file and enter valid page number.");
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-      const splitPdf = await PDFLib.PDFDocument.create();
-      const [page] = await splitPdf.copyPages(pdfDoc, [pageNumber - 1]);
-      splitPdf.addPage(page);
-      const pdfBytes = await splitPdf.save();
-      downloadBlob(pdfBytes, `page-${pageNumber}.pdf`);
-    }
-
-    async function protectPDF() {
-      const input = document.getElementById('protectInput');
-      const file = input.files[0];
-      const password = document.getElementById('password').value;
-      if (!file || !password) return alert("Select file and enter password");
-      alert("Password protection is not yet supported in browser. This will require server-side code or paid libraries.");
-    }
-
-    function downloadBlob(data, filename) {
-      const blob = new Blob([data], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      link.textContent = `Download ${filename}`;
-      link.style.display = 'block';
-      document.getElementById('output').innerHTML = '';
-      document.getElementById('output').appendChild(link);
-    }
-  </script>
-</body>
-</html>
-
-<!DOCTYPE html>
+        
+      <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EasyPDFTools</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -159,18 +13,73 @@
       margin: 0;
       padding: 0;
       color: #333;
+      position: relative;
+      min-height: 100vh;
     }
-
     header {
       background-color: #4a90e2;
       padding: 20px;
       text-align: center;
       color: white;
+      position: relative;
     }
-
     h1 {
       margin: 0;
       font-size: 2.5rem;
+    }
+
+    /* Tools Toggle Button */
+    #toolsToggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      color: #4a90e2;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+      transition: background-color 0.3s ease;
+      z-index: 1001;
+    }
+    #toolsToggle:hover {
+      background-color: #357ABD;
+      color: white;
+    }
+
+    /* Tools Menu */
+    #toolsMenu {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      padding: 10px 0;
+      display: none;
+      z-index: 1000;
+      width: 180px;
+    }
+    #toolsMenu button {
+      background: none;
+      border: none;
+      text-align: left;
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #4a90e2;
+      border-bottom: 1px solid #ddd;
+      transition: background-color 0.2s ease;
+    }
+    #toolsMenu button:last-child {
+      border-bottom: none;
+    }
+    #toolsMenu button:hover {
+      background-color: #4a90e2;
+      color: white;
     }
 
     .container {
@@ -181,7 +90,6 @@
       box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
       border-radius: 8px;
     }
-
     footer {
       background-color: #222;
       color: #aaa;
@@ -189,18 +97,16 @@
       padding: 15px;
       margin-top: 40px;
     }
-
     footer a {
       color: #4a90e2;
       text-decoration: none;
       margin: 0 10px;
     }
-
     footer a:hover {
       text-decoration: underline;
     }
 
-    button {
+    button.convert-btn {
       background-color: #4a90e2;
       border: none;
       padding: 12px 25px;
@@ -210,21 +116,40 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
-    button:hover {
+    button.convert-btn:hover {
       background-color: #357ABD;
+    }
+
+    input[type=file] {
+      margin-bottom: 20px;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
+
   <header>
     <h1>EasyPDFTools</h1>
     <p>Your Free Online PDF Tool Suite</p>
+    <button id="toolsToggle">Tools ▼</button>
+    <div id="toolsMenu">
+      <button data-tool="compress">Compress PDF</button>
+      <button data-tool="imagepdf">Image to PDF Converter</button>
+      <!-- Future tools can be added here -->
+    </div>
   </header>
 
-  <div class="container">
-    <!-- Yahan apna PDF compress ya other tool code daal sakte ho -->
-    <p>Welcome to EasyPDFTools! Apna PDF compress karne ke liye tool yahan add karo.</p>
+  <!-- Containers for tools -->
+  <div id="compress" class="container" style="display:none;">
+    <h2>Compress PDF</h2>
+    <p>PDF compress karne ka tool yahan add karna hai (abhi placeholder).</p>
+  </div>
+
+  <div id="imagepdf" class="container" style="display:block;">
+    <h2>Image to PDF Converter</h2>
+    <input type="file" id="imageFiles" accept="image/*" multiple />
+    <br />
+    <button class="convert-btn" onclick="convertImagesToPDF()">Convert to PDF</button>
   </div>
 
   <footer>
@@ -232,31 +157,49 @@
     <a href="terms.html">Terms & Conditions</a> |
     <a href="contact.html">Contact</a>
   </footer>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>EasyPDFTools - Image to PDF</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f7f9fc; }
-    .container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    button { background-color: #4a90e2; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; }
-    button:hover { background-color: #357ABD; }
-    input[type=file] { margin-bottom: 20px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Image to PDF Converter</h2>
-    <input type="file" id="imageFiles" accept="image/*" multiple />
-    <br />
-    <button onclick="convertImagesToPDF()">Convert to PDF</button>
-  </div>
 
   <script>
+    // Toggle tools menu show/hide
+    const toolsToggle = document.getElementById('toolsToggle');
+    const toolsMenu = document.getElementById('toolsMenu');
+
+    toolsToggle.addEventListener('click', () => {
+      if (toolsMenu.style.display === 'block') {
+        toolsMenu.style.display = 'none';
+      } else {
+        toolsMenu.style.display = 'block';
+      }
+    });
+
+    // Close menu if clicked outside
+    window.addEventListener('click', (e) => {
+      if (!toolsToggle.contains(e.target) && !toolsMenu.contains(e.target)) {
+        toolsMenu.style.display = 'none';
+      }
+    });
+
+    // Tool buttons click event to show relevant container
+    const toolButtons = toolsMenu.querySelectorAll('button');
+    const containers = {
+      compress: document.getElementById('compress'),
+      imagepdf: document.getElementById('imagepdf')
+    };
+
+    toolButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Hide all containers
+        Object.values(containers).forEach(c => c.style.display = 'none');
+
+        // Show selected container
+        const selected = btn.getAttribute('data-tool');
+        containers[selected].style.display = 'block';
+
+        // Hide the menu after selection
+        toolsMenu.style.display = 'none';
+      });
+    });
+
+    // Image to PDF converter code
     async function convertImagesToPDF() {
       const { jsPDF } = window.jspdf;
       const files = document.getElementById('imageFiles').files;
@@ -276,13 +219,13 @@
 
         await new Promise(resolve => {
           img.onload = () => {
-            const imgWidth = 190;  // width in mm, page width is about 210mm
+            const imgWidth = 190;
             const imgHeight = (img.height * imgWidth) / img.width;
 
             if(i > 0) pdf.addPage();
             pdf.addImage(img, 'JPEG', 10, 10, imgWidth, imgHeight);
             resolve();
-          }
+          };
         });
       }
 
