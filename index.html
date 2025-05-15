@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyPDFTools - Compress PDF</title>
+  <title>EasyPDFTools</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,22 +16,26 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
     }
     input[type="file"] {
-      margin: 20px 0;
+      margin: 10px 0;
     }
     button {
       background-color: #007bff;
       color: #fff;
       border: none;
       padding: 10px 20px;
+      margin: 10px;
       border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
       background-color: #0056b3;
+    }
+    .tool-section {
+      margin-bottom: 40px;
     }
     #output {
       margin-top: 20px;
@@ -40,41 +44,63 @@
 </head>
 <body>
   <div class="container">
-    <h1>Compress PDF (Client-Side)</h1>
-    <p>Select a PDF file to compress:</p>
-    <input type="file" id="pdfInput" accept="application/pdf" />
-    <br />
-    <button onclick="compressPDF()">Compress PDF</button>
+    <h1>EasyPDFTools - Free PDF Tools</h1>
+
+    <div class="tool-section">
+      <h2>Compress PDF</h2>
+      <input type="file" id="compressInput" accept="application/pdf" />
+      <br />
+      <button onclick="compressPDF()">Compress PDF</button>
+    </div>
+
+    <div class="tool-section">
+      <h2>Merge PDF</h2>
+      <input type="file" id="mergeInput1" accept="application/pdf" multiple />
+      <br />
+      <button onclick="mergePDFs()">Merge PDFs</button>
+    </div>
+
     <div id="output"></div>
   </div>
 
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script>
     async function compressPDF() {
-      const input = document.getElementById('pdfInput');
+      const input = document.getElementById('compressInput');
       const file = input.files[0];
-      if (!file) {
-        alert("Please select a PDF file first.");
-        return;
-      }
-
+      if (!file) return alert("Please select a PDF file.");
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-
-      // Just re-saving reduces file size in many cases
       const compressedPdfBytes = await pdfDoc.save({ useObjectStreams: true });
+      downloadBlob(compressedPdfBytes, 'compressed.pdf');
+    }
 
-      const blob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
-      const downloadLink = document.createElement('a');
-      downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = 'compressed.pdf';
-      downloadLink.textContent = 'Download Compressed PDF';
-      downloadLink.style.display = 'block';
-      downloadLink.style.marginTop = '20px';
+    async function mergePDFs() {
+      const input = document.getElementById('mergeInput1');
+      const files = input.files;
+      if (!files.length) return alert("Please select PDF files to merge.");
 
-      const output = document.getElementById('output');
-      output.innerHTML = '';
-      output.appendChild(downloadLink);
+      const mergedPdf = await PDFLib.PDFDocument.create();
+      for (let file of files) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      }
+
+      const mergedPdfBytes = await mergedPdf.save();
+      downloadBlob(mergedPdfBytes, 'merged.pdf');
+    }
+
+    function downloadBlob(data, filename) {
+      const blob = new Blob([data], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.textContent = `Download ${filename}`;
+      link.style.display = 'block';
+      document.getElementById('output').innerHTML = '';
+      document.getElementById('output').appendChild(link);
     }
   </script>
 </body>
