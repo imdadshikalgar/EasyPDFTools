@@ -1,163 +1,210 @@
         
-                <!DOCTYPE html>
+                  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyPDFTools</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-  <style>
-    body {
-      padding: 2rem;
-    }
-    #tools > div {
-      display: none;
-    }
-    footer {
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      padding: 10px;
-      font-size: 0.8rem;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EasyPDFTools</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  #featureSelect {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 8px;
+    font-size: 16px;
+  }
+  .feature-section { margin-top: 60px; }
+  #termsLink {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
+  }
+  /* Modal styles */
+  #termsModal {
+    display: none;
+    position: fixed; 
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+  }
+  #termsModalContent {
+    background: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+  }
+  #closeTerms {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    background: #eee;
+    border: none;
+    font-size: 16px;
+    padding: 5px 10px;
+  }
+</style>
 </head>
 <body>
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>EasyPDFTools</h2>
-    <select id="toolSelector" class="form-select w-auto">
-      <option value="imageToPdf">Image to PDF</option>
-      <option value="compressPdf">Compress PDF</option>
-      <option value="mergePdf">Merge PDF</option>
-      <option value="splitPdf">Split PDF</option>
-    </select>
+
+<select id="featureSelect" title="Select Feature">
+  <option value="imageToPdf">Image to PDF (Default)</option>
+  <option value="compressPdf">Compress PDF</option>
+  <option value="mergePdf">Merge PDF</option>
+  <option value="splitPdf">Split PDF</option>
+  <!-- Add more features here later -->
+</select>
+
+<div id="content" class="feature-section">
+  <!-- Default content is Image to PDF -->
+  <h2>Image to PDF Converter</h2>
+  <input type="file" id="imageFiles" accept="image/*" multiple />
+  <button id="convertBtn">Convert to PDF</button>
+  <p id="status"></p>
+</div>
+
+<!-- Terms and Conditions Link -->
+<div id="termsLink">Terms and Conditions</div>
+
+<!-- Terms Modal -->
+<div id="termsModal">
+  <div id="termsModalContent">
+    <button id="closeTerms">Close</button>
+    <h2>Terms and Conditions</h2>
+    <p>
+      This is a free tool to convert and manipulate PDFs. Use it responsibly.<br />
+      We do not store any files on our servers.<br />
+      By using this tool, you agree to our terms.<br />
+      <!-- Aap apne terms yahan likh sakte hain -->
+    </p>
   </div>
+</div>
 
-  <div id="tools">
-    <!-- Image to PDF -->
-    <div id="imageToPdf">
-      <h4>Image to PDF</h4>
-      <input type="file" id="imageInput" multiple accept="image/*" class="form-control" /><br />
-      <button class="btn btn-primary" onclick="convertImagesToPDF()">Convert</button>
-    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  const { jsPDF } = window.jspdf;
 
-    <!-- Compress PDF -->
-    <div id="compressPdf">
-      <h4>Compress PDF</h4>
-      <input type="file" id="compressInput" accept="application/pdf" class="form-control" /><br />
-      <button class="btn btn-primary" onclick="compressPDF()">Compress</button>
-    </div>
+  const featureSelect = document.getElementById('featureSelect');
+  const content = document.getElementById('content');
+  const termsLink = document.getElementById('termsLink');
+  const termsModal = document.getElementById('termsModal');
+  const closeTerms = document.getElementById('closeTerms');
 
-    <!-- Merge PDF -->
-    <div id="mergePdf">
-      <h4>Merge PDFs</h4>
-      <input type="file" id="mergeInput" multiple accept="application/pdf" class="form-control" /><br />
-      <button class="btn btn-primary" onclick="mergePDFs()">Merge</button>
-    </div>
+  // Show/hide terms modal
+  termsLink.addEventListener('click', () => {
+    termsModal.style.display = 'block';
+  });
+  closeTerms.addEventListener('click', () => {
+    termsModal.style.display = 'none';
+  });
+  window.addEventListener('click', (e) => {
+    if (e.target === termsModal) {
+      termsModal.style.display = 'none';
+    }
+  });
 
-    <!-- Split PDF -->
-    <div id="splitPdf">
-      <h4>Split PDF</h4>
-      <input type="file" id="splitInput" accept="application/pdf" class="form-control" /><br />
-      <button class="btn btn-primary" onclick="splitPDF()">Split</button>
-    </div>
-  </div>
+  // Default feature: Image to PDF
+  function loadImageToPdf() {
+    content.innerHTML = `
+      <h2>Image to PDF Converter</h2>
+      <input type="file" id="imageFiles" accept="image/*" multiple />
+      <button id="convertBtn">Convert to PDF</button>
+      <p id="status"></p>
+    `;
 
-  <footer>
-    <p>By using this site, you agree to our Terms & Conditions</p>
-  </footer>
+    const imageFiles = document.getElementById('imageFiles');
+    const convertBtn = document.getElementById('convertBtn');
+    const status = document.getElementById('status');
 
-  <script>
-    const tools = document.querySelectorAll('#tools > div');
-    const selector = document.getElementById('toolSelector');
-
-    selector.addEventListener('change', () => {
-      tools.forEach(tool => tool.style.display = 'none');
-      document.getElementById(selector.value).style.display = 'block';
-    });
-
-    document.getElementById('imageToPdf').style.display = 'block'; // default
-
-    async function convertImagesToPDF() {
-      const input = document.getElementById('imageInput');
-      const { jsPDF } = window.jspdf;
+    convertBtn.addEventListener('click', () => {
+      if (!imageFiles.files.length) {
+        alert('Please select image files first');
+        return;
+      }
+      status.textContent = 'Processing...';
       const pdf = new jsPDF();
 
-      for (let i = 0; i < input.files.length; i++) {
-        const file = input.files[i];
-        const img = new Image();
+      let count = 0;
+      const files = Array.from(imageFiles.files);
+
+      function addImagePage(index) {
+        if (index >= files.length) {
+          pdf.save('images.pdf');
+          status.textContent = 'PDF Generated!';
+          return;
+        }
+        const file = files[index];
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function(evt) {
+          const img = new Image();
           img.onload = function() {
-            const imgWidth = 210;
+            const imgWidth = 210; // A4 size width in mm
+            const pageHeight = 297;
             const imgHeight = (img.height * imgWidth) / img.width;
-            if (i !== 0) pdf.addPage();
+
+            if (index > 0) pdf.addPage();
             pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
-            if (i === input.files.length - 1) {
-              pdf.save("images.pdf");
-            }
+            addImagePage(index + 1);
           };
-          img.src = e.target.result;
+          img.src = evt.target.result;
         };
         reader.readAsDataURL(file);
       }
+
+      addImagePage(0);
+    });
+  }
+
+  // Compress PDF placeholder
+  function loadCompressPdf() {
+    content.innerHTML = `
+      <h2>Compress PDF (Coming Soon)</h2>
+      <p>This feature will be added later.</p>
+    `;
+  }
+
+  // Merge PDF placeholder
+  function loadMergePdf() {
+    content.innerHTML = `
+      <h2>Merge PDF (Coming Soon)</h2>
+      <p>This feature will be added later.</p>
+    `;
+  }
+
+  // Split PDF placeholder
+  function loadSplitPdf() {
+    content.innerHTML = `
+      <h2>Split PDF (Coming Soon)</h2>
+      <p>This feature will be added later.</p>
+    `;
+  }
+
+  // Load feature based on selection
+  function loadFeature(feature) {
+    switch(feature) {
+      case 'imageToPdf': loadImageToPdf(); break;
+      case 'compressPdf': loadCompressPdf(); break;
+      case 'mergePdf': loadMergePdf(); break;
+      case 'splitPdf': loadSplitPdf(); break;
+      default: loadImageToPdf();
     }
+  }
 
-    async function compressPDF() {
-      alert("Basic compression reduces PDF quality. Upload and re-save PDF.");
-      const input = document.getElementById('compressInput');
-      if (!input.files[0]) return;
-      const reader = new FileReader();
-      reader.onload = async function() {
-        const pdfDoc = await PDFLib.PDFDocument.load(reader.result);
-        const bytes = await pdfDoc.save();
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'compressed.pdf';
-        link.click();
-      };
-      reader.readAsArrayBuffer(input.files[0]);
-    }
+  // Initial load
+  loadFeature('imageToPdf');
 
-    async function mergePDFs() {
-      const input = document.getElementById('mergeInput');
-      const mergedPdf = await PDFLib.PDFDocument.create();
+  // On toggle change
+  featureSelect.addEventListener('change', (e) => {
+    loadFeature(e.target.value);
+  });
+</script>
 
-      for (const file of input.files) {
-        const bytes = await file.arrayBuffer();
-        const pdf = await PDFLib.PDFDocument.load(bytes);
-        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        copiedPages.forEach(page => mergedPdf.addPage(page));
-      }
-
-      const mergedBytes = await mergedPdf.save();
-      const blob = new Blob([mergedBytes], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'merged.pdf';
-      link.click();
-    }
-
-    async function splitPDF() {
-      const input = document.getElementById('splitInput');
-      const bytes = await input.files[0].arrayBuffer();
-      const pdfDoc = await PDFLib.PDFDocument.load(bytes);
-
-      for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-        const newPdf = await PDFLib.PDFDocument.create();
-        const [page] = await newPdf.copyPages(pdfDoc, [i]);
-        newPdf.addPage(page);
-        const pdfBytes = await newPdf.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `page_${i + 1}.pdf`;
-        link.click();
-      }
-    }
-  </script>
 </body>
 </html>
