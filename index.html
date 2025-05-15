@@ -1,5 +1,5 @@
         
-          <!DOCTYPE html>
+                <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -8,206 +8,96 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    margin: 0; padding: 0; background: #f0f2f5;
+    margin: 20px;
+    background: #f9f9f9;
   }
   header {
-    background: #007bff;
-    color: white;
-    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  h1 {
-    margin: 0; font-size: 22px;
-  }
   .toggle-menu {
     position: relative;
+    display: inline-block;
   }
-  .toggle-button {
-    background: white; color: #007bff;
-    border: none; padding: 8px 15px;
-    border-radius: 4px;
+  .toggle-menu button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
     cursor: pointer;
-    font-weight: bold;
+    border-radius: 5px;
   }
-  .menu-items {
+  .toggle-menu-content {
     display: none;
     position: absolute;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 5px;
     right: 0;
-    background: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    border-radius: 4px;
-    margin-top: 5px;
     z-index: 10;
-    min-width: 220px;
+    width: 250px;
   }
-  .menu-items label {
+  .toggle-menu-content label {
     display: flex;
-    align-items: center;
-    padding: 10px;
+    justify-content: space-between;
+    margin-bottom: 12px;
     cursor: pointer;
-    user-select: none;
   }
-  .menu-items label:hover {
-    background: #007bff;
-    color: white;
+  .toggle-menu-content label span {
+    font-weight: 600;
   }
-  .menu-items input[type="checkbox"] {
-    margin-right: 10px;
+  .toggle-menu-content input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
   }
-  main {
-    padding: 20px;
-  }
-  .feature-section {
-    display: none;
-    background: white;
-    padding: 20px;
-    border-radius: 6px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    max-width: 600px;
-    margin: 20px auto;
-  }
-  .feature-section.active {
+  .toggle-menu:hover .toggle-menu-content {
     display: block;
   }
-  input[type="file"] {
-    margin: 10px 0;
+  main {
+    margin-top: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
   }
-  button.action-btn {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  button.action-btn:hover {
-    background: #0056b3;
-  }
-  p.note {
-    font-size: 14px;
-    color: #555;
+  footer {
+    margin-top: 40px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
   }
 </style>
 </head>
 <body>
-
 <header>
   <h1>EasyPDFTools</h1>
   <div class="toggle-menu">
-    <button class="toggle-button" id="toggleBtn">More Tools ▼</button>
-    <div class="menu-items" id="menuItems">
-      <!-- These checkboxes control visibility of features except img2pdf -->
-      <label><input type="checkbox" data-feature="compress" /> Compress PDF</label>
-      <label><input type="checkbox" data-feature="merge" /> Merge PDF</label>
-      <label><input type="checkbox" data-feature="split" /> Split PDF</label>
-      <label><input type="checkbox" data-feature="pdf2jpg" /> Convert PDF to JPG</label>
-      <label><input type="checkbox" data-feature="pdf2word" /> Convert PDF to Word</label>
-      <label><input type="checkbox" data-feature="protect" /> Protect/Unlock PDF</label>
+    <button>More Tools &#x25BC;</button>
+    <div class="toggle-menu-content">
+      <label><span>Compress PDF</span><input type="checkbox" id="compressPDF" /></label>
+      <label><span>Merge PDF</span><input type="checkbox" id="mergePDF" /></label>
+      <label><span>Split PDF</span><input type="checkbox" id="splitPDF" /></label>
+      <label><span>Convert PDF to JPG</span><input type="checkbox" id="pdfToJPG" /></label>
+      <label><span>Convert PDF to Word</span><input type="checkbox" id="pdfToWord" /></label>
+      <label><span>Protect/Unlock PDF</span><input type="checkbox" id="protectPDF" /></label>
     </div>
   </div>
 </header>
 
 <main>
-  <!-- Image to PDF - shown by default -->
-  <section class="feature-section active" id="img2pdf">
-    <h2>Image to PDF</h2>
-    <input type="file" id="imgFiles" accept="image/*" multiple />
-    <br />
-    <button class="action-btn" onclick="alert('Image to PDF feature coming soon!')">Convert to PDF</button>
-    <p class="note">Select multiple images to convert into a single PDF file.</p>
-  </section>
-
-  <!-- Other features hidden initially -->
-  <section class="feature-section" id="compress">
-    <h2>Compress PDF</h2>
-    <input type="file" id="compressFile" accept="application/pdf" multiple />
-    <br />
-    <button class="action-btn" onclick="alert('Compress PDF feature coming soon!')">Compress PDF</button>
-    <p class="note">Select PDF files to compress.</p>
-  </section>
-
-  <section class="feature-section" id="merge">
-    <h2>Merge PDF</h2>
-    <input type="file" id="mergeFiles" accept="application/pdf" multiple />
-    <br />
-    <button class="action-btn" onclick="alert('Merge PDF feature coming soon!')">Merge PDFs</button>
-    <p class="note">Select multiple PDF files to merge into one.</p>
-  </section>
-
-  <section class="feature-section" id="split">
-    <h2>Split PDF</h2>
-    <input type="file" id="splitFile" accept="application/pdf" />
-    <br />
-    <label>Pages to extract (e.g. 1-3,5): <input type="text" id="splitPages" placeholder="1-3,5" /></label>
-    <br /><br />
-    <button class="action-btn" onclick="alert('Split PDF feature coming soon!')">Split PDF</button>
-    <p class="note">Select PDF and specify pages to split.</p>
-  </section>
-
-  <section class="feature-section" id="pdf2jpg">
-    <h2>Convert PDF to JPG</h2>
-    <input type="file" id="pdf2jpgFile" accept="application/pdf" />
-    <br />
-    <button class="action-btn" onclick="alert('Convert PDF to JPG feature coming soon!')">Convert to JPG</button>
-    <p class="note">Select PDF to convert each page into JPG images.</p>
-  </section>
-
-  <section class="feature-section" id="pdf2word">
-    <h2>Convert PDF to Word</h2>
-    <input type="file" id="pdf2wordFile" accept="application/pdf" />
-    <br />
-    <button class="action-btn" onclick="alert('Convert PDF to Word feature coming soon!')">Convert to Word</button>
-    <p class="note">Select PDF to convert into Word document.</p>
-  </section>
-
-  <section class="feature-section" id="protect">
-    <h2>Protect / Unlock PDF</h2>
-    <input type="file" id="protectFile" accept="application/pdf" />
-    <br />
-    <label>Password: <input type="password" id="pdfPassword" /></label>
-    <br /><br />
-    <button class="action-btn" onclick="alert('Protect/Unlock PDF feature coming soon!')">Apply</button>
-    <p class="note">Select PDF and enter password to protect or unlock.</p>
-  </section>
+  <h2>Image to PDF Converter</h2>
+  <!-- Yahan tumhara image to pdf converter ka code aayega -->
+  <p>Upload images and convert them to PDF.</p>
 </main>
 
+<footer>
+  <p>By using EasyPDFTools, you agree to our <a href="#">Terms & Conditions</a>.</p>
+</footer>
+
 <script>
-  const toggleBtn = document.getElementById('toggleBtn');
-  const menuItems = document.getElementById('menuItems');
-  const sections = document.querySelectorAll('.feature-section');
-
-  toggleBtn.addEventListener('click', () => {
-    menuItems.style.display = menuItems.style.display === 'block' ? 'none' : 'block';
-  });
-
-  menuItems.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-    chk.addEventListener('change', (e) => {
-      const feature = e.target.getAttribute('data-feature');
-      const section = document.getElementById(feature);
-      if(e.target.checked) {
-        section.classList.add('active');
-      } else {
-        section.classList.remove('active');
-      }
-    });
-  });
-
-  // Initially Image to PDF is visible, others hidden
-  // If you want, you can set some checkboxes checked by default here:
-  // For example compress PDF checkbox checked by default (optional)
-  // document.querySelector('input[data-feature="compress"]').checked = true;
-  // document.getElementById('compress').classList.add('active');
-
-  // Click outside menu to close it
-  document.addEventListener('click', (e) => {
-    if (!menuItems.contains(e.target) && e.target !== toggleBtn) {
-      menuItems.style.display = 'none';
-    }
-  });
+  // Yahan toggle switch ka logic aur feature display logic add kar sakte ho
+  // Jaise ki toggle on/off pe alag feature dikha sakte ho
 </script>
-
 </body>
 </html>
