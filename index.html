@@ -1,246 +1,213 @@
         
-      <!DOCTYPE html>
+          <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EasyPDFTools</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f7f9fc;
-      margin: 0;
-      padding: 0;
-      color: #333;
-      position: relative;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #4a90e2;
-      padding: 20px;
-      text-align: center;
-      color: white;
-      position: relative;
-    }
-    h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-
-    /* Tools Toggle Button */
-    #toolsToggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: white;
-      color: #4a90e2;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-      transition: background-color 0.3s ease;
-      z-index: 1001;
-    }
-    #toolsToggle:hover {
-      background-color: #357ABD;
-      color: white;
-    }
-
-    /* Tools Menu */
-    #toolsMenu {
-      position: fixed;
-      top: 70px;
-      right: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      padding: 10px 0;
-      display: none;
-      z-index: 1000;
-      width: 180px;
-    }
-    #toolsMenu button {
-      background: none;
-      border: none;
-      text-align: left;
-      width: 100%;
-      padding: 12px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      color: #4a90e2;
-      border-bottom: 1px solid #ddd;
-      transition: background-color 0.2s ease;
-    }
-    #toolsMenu button:last-child {
-      border-bottom: none;
-    }
-    #toolsMenu button:hover {
-      background-color: #4a90e2;
-      color: white;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 20px;
-      background: white;
-      box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
-      border-radius: 8px;
-    }
-    footer {
-      background-color: #222;
-      color: #aaa;
-      text-align: center;
-      padding: 15px;
-      margin-top: 40px;
-    }
-    footer a {
-      color: #4a90e2;
-      text-decoration: none;
-      margin: 0 10px;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    button.convert-btn {
-      background-color: #4a90e2;
-      border: none;
-      padding: 12px 25px;
-      color: white;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button.convert-btn:hover {
-      background-color: #357ABD;
-    }
-
-    input[type=file] {
-      margin-bottom: 20px;
-      font-size: 1rem;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EasyPDFTools</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0; background: #f0f2f5;
+  }
+  header {
+    background: #007bff;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  h1 {
+    margin: 0; font-size: 22px;
+  }
+  .toggle-menu {
+    position: relative;
+  }
+  .toggle-button {
+    background: white; color: #007bff;
+    border: none; padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .menu-items {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    margin-top: 5px;
+    z-index: 10;
+    min-width: 220px;
+  }
+  .menu-items label {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .menu-items label:hover {
+    background: #007bff;
+    color: white;
+  }
+  .menu-items input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  main {
+    padding: 20px;
+  }
+  .feature-section {
+    display: none;
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  .feature-section.active {
+    display: block;
+  }
+  input[type="file"] {
+    margin: 10px 0;
+  }
+  button.action-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  button.action-btn:hover {
+    background: #0056b3;
+  }
+  p.note {
+    font-size: 14px;
+    color: #555;
+  }
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>EasyPDFTools</h1>
-    <p>Your Free Online PDF Tool Suite</p>
-    <button id="toolsToggle">Tools ▼</button>
-    <div id="toolsMenu">
-      <button data-tool="compress">Compress PDF</button>
-      <button data-tool="imagepdf">Image to PDF Converter</button>
-      <!-- Future tools can be added here -->
+<header>
+  <h1>EasyPDFTools</h1>
+  <div class="toggle-menu">
+    <button class="toggle-button" id="toggleBtn">More Tools ▼</button>
+    <div class="menu-items" id="menuItems">
+      <!-- These checkboxes control visibility of features except img2pdf -->
+      <label><input type="checkbox" data-feature="compress" /> Compress PDF</label>
+      <label><input type="checkbox" data-feature="merge" /> Merge PDF</label>
+      <label><input type="checkbox" data-feature="split" /> Split PDF</label>
+      <label><input type="checkbox" data-feature="pdf2jpg" /> Convert PDF to JPG</label>
+      <label><input type="checkbox" data-feature="pdf2word" /> Convert PDF to Word</label>
+      <label><input type="checkbox" data-feature="protect" /> Protect/Unlock PDF</label>
     </div>
-  </header>
-
-  <!-- Containers for tools -->
-  <div id="compress" class="container" style="display:none;">
-    <h2>Compress PDF</h2>
-    <p>PDF compress karne ka tool yahan add karna hai (abhi placeholder).</p>
   </div>
+</header>
 
-  <div id="imagepdf" class="container" style="display:block;">
-    <h2>Image to PDF Converter</h2>
-    <input type="file" id="imageFiles" accept="image/*" multiple />
+<main>
+  <!-- Image to PDF - shown by default -->
+  <section class="feature-section active" id="img2pdf">
+    <h2>Image to PDF</h2>
+    <input type="file" id="imgFiles" accept="image/*" multiple />
     <br />
-    <button class="convert-btn" onclick="convertImagesToPDF()">Convert to PDF</button>
-  </div>
+    <button class="action-btn" onclick="alert('Image to PDF feature coming soon!')">Convert to PDF</button>
+    <p class="note">Select multiple images to convert into a single PDF file.</p>
+  </section>
 
-  <footer>
-    <a href="privacy-policy.html">Privacy Policy</a> |
-    <a href="terms.html">Terms & Conditions</a> |
-    <a href="contact.html">Contact</a>
-  </footer>
+  <!-- Other features hidden initially -->
+  <section class="feature-section" id="compress">
+    <h2>Compress PDF</h2>
+    <input type="file" id="compressFile" accept="application/pdf" multiple />
+    <br />
+    <button class="action-btn" onclick="alert('Compress PDF feature coming soon!')">Compress PDF</button>
+    <p class="note">Select PDF files to compress.</p>
+  </section>
 
-  <script>
-    // Toggle tools menu show/hide
-    const toolsToggle = document.getElementById('toolsToggle');
-    const toolsMenu = document.getElementById('toolsMenu');
+  <section class="feature-section" id="merge">
+    <h2>Merge PDF</h2>
+    <input type="file" id="mergeFiles" accept="application/pdf" multiple />
+    <br />
+    <button class="action-btn" onclick="alert('Merge PDF feature coming soon!')">Merge PDFs</button>
+    <p class="note">Select multiple PDF files to merge into one.</p>
+  </section>
 
-    toolsToggle.addEventListener('click', () => {
-      if (toolsMenu.style.display === 'block') {
-        toolsMenu.style.display = 'none';
+  <section class="feature-section" id="split">
+    <h2>Split PDF</h2>
+    <input type="file" id="splitFile" accept="application/pdf" />
+    <br />
+    <label>Pages to extract (e.g. 1-3,5): <input type="text" id="splitPages" placeholder="1-3,5" /></label>
+    <br /><br />
+    <button class="action-btn" onclick="alert('Split PDF feature coming soon!')">Split PDF</button>
+    <p class="note">Select PDF and specify pages to split.</p>
+  </section>
+
+  <section class="feature-section" id="pdf2jpg">
+    <h2>Convert PDF to JPG</h2>
+    <input type="file" id="pdf2jpgFile" accept="application/pdf" />
+    <br />
+    <button class="action-btn" onclick="alert('Convert PDF to JPG feature coming soon!')">Convert to JPG</button>
+    <p class="note">Select PDF to convert each page into JPG images.</p>
+  </section>
+
+  <section class="feature-section" id="pdf2word">
+    <h2>Convert PDF to Word</h2>
+    <input type="file" id="pdf2wordFile" accept="application/pdf" />
+    <br />
+    <button class="action-btn" onclick="alert('Convert PDF to Word feature coming soon!')">Convert to Word</button>
+    <p class="note">Select PDF to convert into Word document.</p>
+  </section>
+
+  <section class="feature-section" id="protect">
+    <h2>Protect / Unlock PDF</h2>
+    <input type="file" id="protectFile" accept="application/pdf" />
+    <br />
+    <label>Password: <input type="password" id="pdfPassword" /></label>
+    <br /><br />
+    <button class="action-btn" onclick="alert('Protect/Unlock PDF feature coming soon!')">Apply</button>
+    <p class="note">Select PDF and enter password to protect or unlock.</p>
+  </section>
+</main>
+
+<script>
+  const toggleBtn = document.getElementById('toggleBtn');
+  const menuItems = document.getElementById('menuItems');
+  const sections = document.querySelectorAll('.feature-section');
+
+  toggleBtn.addEventListener('click', () => {
+    menuItems.style.display = menuItems.style.display === 'block' ? 'none' : 'block';
+  });
+
+  menuItems.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+    chk.addEventListener('change', (e) => {
+      const feature = e.target.getAttribute('data-feature');
+      const section = document.getElementById(feature);
+      if(e.target.checked) {
+        section.classList.add('active');
       } else {
-        toolsMenu.style.display = 'block';
+        section.classList.remove('active');
       }
     });
+  });
 
-    // Close menu if clicked outside
-    window.addEventListener('click', (e) => {
-      if (!toolsToggle.contains(e.target) && !toolsMenu.contains(e.target)) {
-        toolsMenu.style.display = 'none';
-      }
-    });
+  // Initially Image to PDF is visible, others hidden
+  // If you want, you can set some checkboxes checked by default here:
+  // For example compress PDF checkbox checked by default (optional)
+  // document.querySelector('input[data-feature="compress"]').checked = true;
+  // document.getElementById('compress').classList.add('active');
 
-    // Tool buttons click event to show relevant container
-    const toolButtons = toolsMenu.querySelectorAll('button');
-    const containers = {
-      compress: document.getElementById('compress'),
-      imagepdf: document.getElementById('imagepdf')
-    };
-
-    toolButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Hide all containers
-        Object.values(containers).forEach(c => c.style.display = 'none');
-
-        // Show selected container
-        const selected = btn.getAttribute('data-tool');
-        containers[selected].style.display = 'block';
-
-        // Hide the menu after selection
-        toolsMenu.style.display = 'none';
-      });
-    });
-
-    // Image to PDF converter code
-    async function convertImagesToPDF() {
-      const { jsPDF } = window.jspdf;
-      const files = document.getElementById('imageFiles').files;
-      if (files.length === 0) {
-        alert('Please select one or more images!');
-        return;
-      }
-
-      const pdf = new jsPDF();
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const imgData = await readFileAsDataURL(file);
-
-        const img = new Image();
-        img.src = imgData;
-
-        await new Promise(resolve => {
-          img.onload = () => {
-            const imgWidth = 190;
-            const imgHeight = (img.height * imgWidth) / img.width;
-
-            if(i > 0) pdf.addPage();
-            pdf.addImage(img, 'JPEG', 10, 10, imgWidth, imgHeight);
-            resolve();
-          };
-        });
-      }
-
-      pdf.save('converted_images.pdf');
+  // Click outside menu to close it
+  document.addEventListener('click', (e) => {
+    if (!menuItems.contains(e.target) && e.target !== toggleBtn) {
+      menuItems.style.display = 'none';
     }
+  });
+</script>
 
-    function readFileAsDataURL(file) {
-      return new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.readAsDataURL(file);
-      });
-    }
-  </script>
 </body>
 </html>
-
-
