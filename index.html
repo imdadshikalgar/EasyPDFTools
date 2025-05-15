@@ -1,28 +1,112 @@
-        
-                  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>EasyPDFTools</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    margin: 20px;
+    background: #f0f4f8;
+    color: #333;
+  }
+  
   #featureSelect {
     position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 8px;
+    top: 15px;
+    right: 15px;
+    padding: 10px 16px;
     font-size: 16px;
+    border-radius: 8px;
+    border: 1.5px solid #007BFF;
+    background-color: white;
+    box-shadow: 0 4px 8px rgb(0 123 255 / 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  .feature-section { margin-top: 60px; }
+  #featureSelect:hover {
+    background-color: #007BFF;
+    color: white;
+  }
+
+  .feature-section {
+    margin-top: 80px;
+    background: white;
+    padding: 30px 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  .feature-section:hover {
+    box-shadow: 0 15px 30px rgb(0 0 0 / 0.15);
+  }
+
+  h2 {
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #007BFF;
+    text-align: center;
+  }
+
+  input[type="file"] {
+    display: block;
+    margin: 0 auto 20px auto;
+    border: 2px dashed #007BFF;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 600px;
+    background: #e9f0ff;
+  }
+
+  button {
+    display: block;
+    margin: 0 auto;
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 14px 40px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 6px 12px rgb(0 123 255 / 0.4);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 8px 20px rgb(0 86 179 / 0.6);
+  }
+
+  #status {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #28a745;
+  }
+
   #termsLink {
     position: fixed;
-    bottom: 10px;
-    right: 10px;
+    bottom: 20px;
+    right: 20px;
     cursor: pointer;
     text-decoration: underline;
-    color: blue;
+    color: #007BFF;
+    font-weight: 600;
+    font-size: 14px;
+    user-select: none;
   }
+  #termsLink:hover {
+    color: #0056b3;
+  }
+
   /* Modal styles */
   #termsModal {
     display: none;
@@ -33,22 +117,40 @@
   }
   #termsModalContent {
     background: white;
-    margin: 10% auto;
-    padding: 20px;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 8px;
+    margin: 8% auto;
+    padding: 25px 30px;
+    width: 90%;
+    max-width: 650px;
+    border-radius: 12px;
     position: relative;
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.2);
   }
   #closeTerms {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 15px;
     cursor: pointer;
     background: #eee;
     border: none;
-    font-size: 16px;
-    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  #closeTerms:hover {
+    background-color: #ccc;
+  }
+
+  #termsModalContent h2 {
+    color: #007BFF;
+    margin-bottom: 20px;
+  }
+
+  #termsModalContent p {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #444;
   }
 </style>
 </head>
@@ -76,7 +178,7 @@
 <!-- Terms Modal -->
 <div id="termsModal">
   <div id="termsModalContent">
-    <button id="closeTerms">Close</button>
+    <button id="closeTerms">×</button>
     <h2>Terms and Conditions</h2>
     <p>
       This is a free tool to convert and manipulate PDFs. Use it responsibly.<br />
@@ -131,7 +233,6 @@
       status.textContent = 'Processing...';
       const pdf = new jsPDF();
 
-      let count = 0;
       const files = Array.from(imageFiles.files);
 
       function addImagePage(index) {
@@ -146,7 +247,6 @@
           const img = new Image();
           img.onload = function() {
             const imgWidth = 210; // A4 size width in mm
-            const pageHeight = 297;
             const imgHeight = (img.height * imgWidth) / img.width;
 
             if (index > 0) pdf.addPage();
@@ -186,23 +286,15 @@
     `;
   }
 
-  // Load feature based on selection
-  function loadFeature(feature) {
-    switch(feature) {
-      case 'imageToPdf': loadImageToPdf(); break;
-      case 'compressPdf': loadCompressPdf(); break;
-      case 'mergePdf': loadMergePdf(); break;
-      case 'splitPdf': loadSplitPdf(); break;
-      default: loadImageToPdf();
-    }
-  }
+  // Load default feature on page load
+  loadImageToPdf();
 
-  // Initial load
-  loadFeature('imageToPdf');
-
-  // On toggle change
-  featureSelect.addEventListener('change', (e) => {
-    loadFeature(e.target.value);
+  featureSelect.addEventListener('change', () => {
+    const value = featureSelect.value;
+    if (value === 'imageToPdf') loadImageToPdf();
+    else if (value === 'compressPdf') loadCompressPdf();
+    else if (value === 'mergePdf') loadMergePdf();
+    else if (value === 'splitPdf') loadSplitPdf();
   });
 </script>
 
