@@ -1,37 +1,41 @@
-
 # EasyPDFTools - Compress PDF
 
-**EasyPDFTools** is a simple, free, and user-friendly online tool to compress PDF files without installing any software. Hosted on GitHub Pages and accessible to everyone.
+**EasyPDFTools** is a free and simple online tool to compress PDF files directly from your browser.
 
-## Features
-
-- Compress PDF (UI available, compression coming soon)
-- Clean and minimal interface
-- 100% free and open-source
-- Works directly in your browser
-
-## How to Use
-
-1. Visit the website: [https://imdadshikalgar.github.io/EasyPDFTools](https://imdadshikalgar.github.io/EasyPDFTools)
-2. Upload your PDF file (feature under development)
-3. Download compressed PDF (coming soon)
-
-## Technology Used
-
-- HTML
-- CSS
-- GitHub Pages (for free hosting)
-
-## Future Plans
-
-- Add real PDF compression using JavaScript or server-side logic
-- Add more PDF tools (Merge, Split, Convert to Word/Image)
-
-## Contribute
-
-Want to help? Fork the repo, make changes, and submit a pull request!
+> Upload your PDF and get a smaller size version in seconds! *(Feature coming soon)*
 
 ---
 
-**Developed by:** Imdad Shikalgar  
-**GitHub:** [@imdadshikalgar](https://github.com/imdadshikalgar)
+### Features
+
+- Simple and clean interface
+- Free to use
+- No sign-up required
+- Runs on browser (no server needed for UI)
+
+---
+
+### Live Website
+
+Visit: [https://imdadshikalgar.github.io/EasyPDFTools](https://imdadshikalgar.github.io/EasyPDFTools)
+
+---
+
+### Upcoming Features
+
+- Real-time PDF compression using JavaScript
+- Drag-and-drop file upload
+- Support for large files
+
+---
+
+### Author
+
+**Imdad Shikalgar**  
+GitHub: [@imdadshikalgar](https://github.com/imdadshikalgar)
+
+---
+
+### License
+
+This project is open source and free to use.
