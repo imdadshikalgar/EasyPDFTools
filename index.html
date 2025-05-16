@@ -282,7 +282,19 @@
       });
     }
   }
+<!-- Image to PDF Section -->
+<div id="imageToPdfSection" style="text-align: center; margin-bottom: 30px;">
+  <h2>Convert Image to PDF</h2>
+  <input type="file" id="imageInput" multiple accept="image/*">
+  <button onclick="convertImagesToPDF()">Convert to PDF</button>
 
+  <!-- Buy Me a Coffee Button (just below Convert to PDF) -->
+  <div style="margin-top: 20px;">
+    <a href="https://www.buymeacoffee.com/imdadshikalgar" target="_blank">
+      <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 50px;">
+    </a>
+  </div>
+</div>
   // Feature 2: Compress PDF (basic image compression inside PDF)
   function setupCompressPDF() {
     activeFeature.innerHTML = `
@@ -422,10 +434,6 @@
 
 </body>
 </html>
-<div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-  <a href="https://www.buymeacoffee.com/imdadshikalgar" target="_blank">
-    <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 50px;">
-  </a>
-</div>
+
 
 
