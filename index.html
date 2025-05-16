@@ -3,299 +3,342 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EasyPDFTools</title>
+<title>EasyPDFTools - Free PDF Tools</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
   body {
-    font-family: 'Roboto', sans-serif;
-    margin: 20px;
-    background: #f0f4f8;
-    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; background: #f5f7fa; color: #333;
   }
-  
+  header {
+    background: #007bff;
+    color: white;
+    padding: 15px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  header h1 {
+    margin: 0; font-size: 1.4rem;
+  }
   #featureSelect {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    padding: 10px 16px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1.5px solid #007BFF;
-    background-color: white;
-    box-shadow: 0 4px 8px rgb(0 123 255 / 0.2);
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  #featureSelect:hover {
-    background-color: #007BFF;
-    color: white;
-  }
-
-  .feature-section {
-    margin-top: 80px;
-    background: white;
-    padding: 30px 40px;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
-    transition: box-shadow 0.3s ease;
-  }
-  .feature-section:hover {
-    box-shadow: 0 15px 30px rgb(0 0 0 / 0.15);
-  }
-
-  h2 {
-    font-weight: 700;
-    margin-bottom: 25px;
-    color: #007BFF;
-    text-align: center;
-  }
-
-  input[type="file"] {
-    display: block;
-    margin: 0 auto 20px auto;
-    border: 2px dashed #007BFF;
-    border-radius: 10px;
-    padding: 20px;
-    cursor: pointer;
-    width: 100%;
-    max-width: 600px;
-    background: #e9f0ff;
-  }
-
-  button {
-    display: block;
-    margin: 0 auto;
-    background-color: #007BFF;
+    padding: 7px 10px;
+    font-size: 1rem;
+    border-radius: 5px;
     border: none;
-    color: white;
-    font-weight: 600;
-    padding: 14px 40px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 16px;
-    box-shadow: 0 6px 12px rgb(0 123 255 / 0.4);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  main {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+  }
+  button {
+    background: #007bff; border: none; color: white; padding: 10px 16px;
+    font-size: 1rem; border-radius: 5px; cursor: pointer;
+    transition: background 0.3s ease;
   }
   button:hover {
-    background-color: #0056b3;
-    box-shadow: 0 8px 20px rgb(0 86 179 / 0.6);
+    background: #0056b3;
   }
-
-  #status {
-    text-align: center;
-    margin-top: 15px;
-    font-weight: 600;
-    color: #28a745;
+  input[type=file] {
+    margin: 10px 0;
   }
-
+  #outputImages img {
+    max-width: 100%;
+    margin-top: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    border-radius: 6px;
+  }
   #termsLink {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 10px; right: 10px;
+    font-size: 0.9rem;
+    color: #007bff;
     cursor: pointer;
     text-decoration: underline;
-    color: #007BFF;
-    font-weight: 600;
-    font-size: 14px;
-    user-select: none;
   }
-  #termsLink:hover {
-    color: #0056b3;
-  }
-
-  /* Modal styles */
+  /* Modal for Terms */
   #termsModal {
-    display: none;
+    display: none; 
     position: fixed; 
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 1000;
+    z-index: 999; 
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
   }
   #termsModalContent {
     background: white;
-    margin: 8% auto;
-    padding: 25px 30px;
-    width: 90%;
-    max-width: 650px;
-    border-radius: 12px;
-    position: relative;
-    box-shadow: 0 12px 30px rgb(0 0 0 / 0.2);
+    margin: 10% auto;
+    padding: 20px;
+    max-width: 600px;
+    border-radius: 8px;
+    overflow-y: auto;
+    max-height: 70vh;
   }
   #closeTerms {
-    position: absolute;
-    top: 12px;
-    right: 15px;
+    float: right;
+    font-size: 1.2rem;
     cursor: pointer;
-    background: #eee;
-    border: none;
-    font-size: 18px;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
   }
-  #closeTerms:hover {
-    background-color: #ccc;
-  }
-
-  #termsModalContent h2 {
-    color: #007BFF;
-    margin-bottom: 20px;
-  }
-
-  #termsModalContent p {
-    font-size: 15px;
-    line-height: 1.5;
-    color: #444;
+  /* Responsive */
+  @media (max-width: 600px) {
+    main {
+      margin: 10px;
+      padding: 15px;
+    }
   }
 </style>
 </head>
 <body>
 
-<select id="featureSelect" title="Select Feature">
-  <option value="imageToPdf">Image to PDF (Default)</option>
-  <option value="compressPdf">Compress PDF</option>
-  <option value="mergePdf">Merge PDF</option>
-  <option value="splitPdf">Split PDF</option>
-  <!-- Add more features here later -->
-</select>
+<header>
+  <h1>EasyPDFTools</h1>
+  <select id="featureSelect" title="Select Feature">
+    <option value="imageToPdf" selected>Image to PDF</option>
+    <option value="pdfToJpg">PDF to JPG</option>
+    <option value="mergePdf">Merge PDF</option>
+    <option value="splitPdf">Split PDF</option>
+    <option value="compressPdf">Compress PDF (Coming Soon)</option>
+    <option value="pdfToWord">PDF to Word (Coming Soon)</option>
+    <option value="protectPdf">Protect/Unlock PDF (Coming Soon)</option>
+  </select>
+</header>
 
-<div id="content" class="feature-section">
-  <!-- Default content is Image to PDF -->
-  <h2>Image to PDF Converter</h2>
-  <input type="file" id="imageFiles" accept="image/*" multiple />
-  <button id="convertBtn">Convert to PDF</button>
-  <p id="status"></p>
-</div>
+<main id="contentArea">
+  <!-- Dynamic content loads here -->
+</main>
 
-<!-- Terms and Conditions Link -->
-<div id="termsLink">Terms and Conditions</div>
+<div id="termsLink">Terms & Conditions</div>
 
-<!-- Terms Modal -->
 <div id="termsModal">
   <div id="termsModalContent">
-    <button id="closeTerms">×</button>
+    <span id="closeTerms">&times;</span>
     <h2>Terms and Conditions</h2>
-    <p>
-      This is a free tool to convert and manipulate PDFs. Use it responsibly.<br />
-      We do not store any files on our servers.<br />
-      By using this tool, you agree to our terms.<br />
-      <!-- Aap apne terms yahan likh sakte hain -->
-    </p>
+    <p>Welcome to EasyPDFTools. By using this website, you agree to the following terms and conditions:</p>
+    <ul>
+      <li>All tools are provided free for personal and educational use.</li>
+      <li>We do not store or share your files. File processing happens in your browser only.</li>
+      <li>We are not responsible for any data loss or file corruption.</li>
+      <li>Please do not upload sensitive or confidential documents.</li>
+      <li>We reserve the right to modify or discontinue tools without notice.</li>
+    </ul>
+    <p>Use these tools responsibly.</p>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-  const { jsPDF } = window.jspdf;
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.8.162/pdf.min.js"></script>
 
+<script>
   const featureSelect = document.getElementById('featureSelect');
-  const content = document.getElementById('content');
+  const contentArea = document.getElementById('contentArea');
   const termsLink = document.getElementById('termsLink');
   const termsModal = document.getElementById('termsModal');
   const closeTerms = document.getElementById('closeTerms');
 
-  // Show/hide terms modal
-  termsLink.addEventListener('click', () => {
-    termsModal.style.display = 'block';
-  });
-  closeTerms.addEventListener('click', () => {
-    termsModal.style.display = 'none';
-  });
-  window.addEventListener('click', (e) => {
-    if (e.target === termsModal) {
-      termsModal.style.display = 'none';
-    }
-  });
+  // Terms modal toggle
+  termsLink.onclick = () => { termsModal.style.display = 'block'; };
+  closeTerms.onclick = () => { termsModal.style.display = 'none'; };
+  window.onclick = (e) => { if(e.target === termsModal) termsModal.style.display = 'none'; };
 
-  // Default feature: Image to PDF
-  function loadImageToPdf() {
-    content.innerHTML = `
-      <h2>Image to PDF Converter</h2>
-      <input type="file" id="imageFiles" accept="image/*" multiple />
-      <button id="convertBtn">Convert to PDF</button>
-      <p id="status"></p>
-    `;
-
-    const imageFiles = document.getElementById('imageFiles');
-    const convertBtn = document.getElementById('convertBtn');
-    const status = document.getElementById('status');
-
-    convertBtn.addEventListener('click', () => {
-      if (!imageFiles.files.length) {
-        alert('Please select image files first');
-        return;
-      }
-      status.textContent = 'Processing...';
-      const pdf = new jsPDF();
-
-      const files = Array.from(imageFiles.files);
-
-      function addImagePage(index) {
-        if (index >= files.length) {
-          pdf.save('images.pdf');
-          status.textContent = 'PDF Generated!';
-          return;
-        }
-        const file = files[index];
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const img = new Image();
-          img.onload = function() {
-            const imgWidth = 210; // A4 size width in mm
-            const imgHeight = (img.height * imgWidth) / img.width;
-
-            if (index > 0) pdf.addPage();
-            pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
-            addImagePage(index + 1);
-          };
-          img.src = evt.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-
-      addImagePage(0);
-    });
-  }
-
-  // Compress PDF placeholder
-  function loadCompressPdf() {
-    content.innerHTML = `
-      <h2>Compress PDF (Coming Soon)</h2>
-      <p>This feature will be added later.</p>
-    `;
-  }
-
-  // Merge PDF placeholder
-  function loadMergePdf() {
-    content.innerHTML = `
-      <h2>Merge PDF (Coming Soon)</h2>
-      <p>This feature will be added later.</p>
-    `;
-  }
-
-  // Split PDF placeholder
-  function loadSplitPdf() {
-    content.innerHTML = `
-      <h2>Split PDF (Coming Soon)</h2>
-      <p>This feature will be added later.</p>
-    `;
-  }
-
-  // Load default feature on page load
+  // Load initial feature (Image to PDF)
   loadImageToPdf();
 
   featureSelect.addEventListener('change', () => {
-    const value = featureSelect.value;
-    if (value === 'imageToPdf') loadImageToPdf();
-    else if (value === 'compressPdf') loadCompressPdf();
-    else if (value === 'mergePdf') loadMergePdf();
-    else if (value === 'splitPdf') loadSplitPdf();
+    switch(featureSelect.value) {
+      case 'imageToPdf': loadImageToPdf(); break;
+      case 'pdfToJpg': loadPdfToJpg(); break;
+      case 'mergePdf': loadMergePdf(); break;
+      case 'splitPdf': loadSplitPdf(); break;
+      case 'compressPdf': showComingSoon(); break;
+      case 'pdfToWord': showComingSoon(); break;
+      case 'protectPdf': showComingSoon(); break;
+      default: contentArea.innerHTML = '';
+    }
   });
+
+  // Utility - Show Coming Soon
+  function showComingSoon() {
+    contentArea.innerHTML = `<h2>Feature Coming Soon</h2><p>This feature will be added later.</p>`;
+  }
+
+  // --- Feature 1: Image to PDF ---
+  function loadImageToPdf() {
+    contentArea.innerHTML = `
+      <h2>Image to PDF</h2>
+      <p>Select multiple images (100+ supported) to convert to a single PDF file.</p>
+      <input type="file" id="imageFiles" multiple accept="image/*" />
+      <br />
+      <button id="convertImagePdfBtn">Convert to PDF</button>
+      <p id="status"></p>
+    `;
+
+    document.getElementById('convertImagePdfBtn').onclick = async () => {
+      const files = document.getElementById('imageFiles').files;
+      if (!files.length) {
+        alert('Please select images first!');
+        return;
+      }
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+
+      const status = document.getElementById('status');
+      status.textContent = 'Processing... Please wait.';
+
+      for (let i = 0; i < files.length; i++) {
+        const imgData = await fileToBase64(files[i]);
+        const img = new Image();
+        img.src = imgData;
+        await new Promise(res => {
+          img.onload = () => {
+            const imgWidth = 190;
+            const imgHeight = (img.height * imgWidth) / img.width;
+            if (i > 0) pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 10, 10, imgWidth, imgHeight);
+            res();
+          };
+        });
+      }
+      pdf.save('images-to-pdf.pdf');
+      status.textContent = 'Done! PDF saved.';
+    };
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = err => reject(err);
+        reader.readAsDataURL(file);
+      });
+    }
+  }
+
+  // --- Feature 2: PDF to JPG ---
+  async function loadPdfToJpg() {
+    contentArea.innerHTML = `
+      <h2>PDF to JPG</h2>
+      <p>Select a PDF file to convert its pages into JPG images.</p>
+      <input type="file" id="pdfFile" accept="application/pdf" />
+      <div id="outputImages"></div>
+      <p id="status"></p>
+    `;
+
+    document.getElementById('pdfFile').onchange = async function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const status = document.getElementById('status');
+      status.textContent = 'Processing PDF...';
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      loadingTask.promise.then(async function(pdf) {
+        const output = document.getElementById('outputImages');
+        output.innerHTML = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 2 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          await page.render({ canvasContext: context, viewport: viewport }).promise;
+          const imgUrl = canvas.toDataURL('image/jpeg');
+          const imgElem = document.createElement('img');
+          imgElem.src = imgUrl;
+          imgElem.alt = `Page ${i}`;
+          output.appendChild(imgElem);
+        }
+        status.textContent = `Converted ${pdf.numPages} pages to images.`;
+      }).catch(err => {
+        status.textContent = 'Error processing PDF: ' + err.message;
+      });
+    };
+  }
+
+  // --- Feature 3: Merge PDF ---
+  async function loadMergePdf() {
+    contentArea.innerHTML = `
+      <h2>Merge PDF</h2>
+      <p>Select multiple PDF files to merge into one PDF.</p>
+      <input type="file" id="pdfFiles" multiple accept="application/pdf" />
+      <br />
+      <button id="mergeBtn">Merge PDFs</button>
+      <p id="status"></p>
+    `;
+
+    document.getElementById('mergeBtn').onclick = async () => {
+      const files = document.getElementById('pdfFiles').files;
+      if (files.length < 2) {
+        alert('Please select at least 2 PDF files.');
+        return;
+      }
+      const status = document.getElementById('status');
+      status.textContent = 'Merging PDFs... Please wait.';
+      try {
+        const mergedPdf = await PDFLib.PDFDocument.create();
+        for (let file of files) {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+          const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+          copiedPages.forEach(page => mergedPdf.addPage(page));
+        }
+        const mergedPdfBytes = await mergedPdf.save();
+        const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'merged.pdf';
+        link.click();
+        status.textContent = 'Merge complete! File downloaded.';
+      } catch (e) {
+        status.textContent = 'Error merging PDFs: ' + e.message;
+      }
+    };
+  }
+
+  // --- Feature 4: Split PDF ---
+  async function loadSplitPdf() {
+    contentArea.innerHTML = `
+      <h2>Split PDF</h2>
+      <p>Select a PDF file to split pages into separate PDFs (each page = 1 PDF).</p>
+      <input type="file" id="splitPdfFile" accept="application/pdf" />
+      <p id="status"></p>
+      <div id="splitOutput"></div>
+    `;
+
+    document.getElementById('splitPdfFile').onchange = async function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const status = document.getElementById('status');
+      const splitOutput = document.getElementById('splitOutput');
+      status.textContent = 'Processing PDF...';
+      splitOutput.innerHTML = '';
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+        const numPages = pdfDoc.getPageCount();
+
+        for (let i = 0; i < numPages; i++) {
+          const newPdf = await PDFLib.PDFDocument.create();
+          const [copiedPage] = await newPdf.copyPages(pdfDoc, [i]);
+          newPdf.addPage(copiedPage);
+          const pdfBytes = await newPdf.save();
+          const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `page_${i+1}.pdf`;
+          a.textContent = `Download page ${i+1}`;
+          a.style.display = 'block';
+          splitOutput.appendChild(a);
+        }
+        status.textContent = `Split into ${numPages} separate PDF files.`;
+      } catch (e) {
+        status.textContent = 'Error splitting PDF: ' + e.message;
+      }
+    };
+  }
 </script>
 
 </body>
